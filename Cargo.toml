@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-dioxus = "0.7.1"
+dioxus = {version = "0.7.1", features = ["desktop"]}
 dioxus-desktop = "0.7.1"
 dioxus-primitives = { git = "https://github.com/DioxusLabs/components", version = "0.0.1", default-features = false }
 lumen-blocks = "0.0.0"

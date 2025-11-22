@@ -1,4 +1,7 @@
+use dioxus::document::Document;
 use dioxus::prelude::*;
+use dioxus_desktop::tao::window::Theme;
+use dioxus_desktop::{Config, WindowBuilder};
 use stable_hash::fast_stable_hash;
 use std::fs::{self, read_to_string};
 use std::path::PathBuf;
@@ -8,19 +11,27 @@ use crate::components::button::{Button, ButtonVariant};
 mod components;
 
 fn main() {
-    dioxus_desktop::launch::launch(app, vec![], vec![]);
+    LaunchBuilder::new()
+        .with_cfg(
+            Config::new().with_menu(None).with_window(
+                WindowBuilder::new()
+                    .with_title("Vibe Vibe Code")
+                    .with_theme(Some(Theme::Dark)),
+            ),
+        )
+        .launch(app);
 }
 
 fn app() -> Element {
-    const _: Asset = asset!("/assets/dx-components-theme.css");
     let mut file_name = use_signal(String::new);
     let mut content = use_signal(String::new);
     let mut vibes = use_signal(|| Option::<String>::None);
     let vibes_display = vibes().map(|_| "inline").unwrap_or("none");
-    let vibes_string = vibes()
-        .map(|message| format!("Vibes: {message}"))
-        .unwrap_or_else(String::new);
+    let vibes_string = vibes().unwrap_or_else(String::new);
     rsx! {
+        Stylesheet{
+            href: asset!("/assets/styles.css")
+        }
         Button {
             variant: ButtonVariant::Outline,
             onclick: move |_| {
@@ -46,7 +57,7 @@ fn app() -> Element {
         Button {
             variant: ButtonVariant::Primary,
             onclick: move |_|{
-                vibes.set(Some(complex_algorithm(content())));
+                vibes.set(Some(complex_model(content())));
             },
             "Get Vibes"
         }
@@ -104,10 +115,10 @@ const VIBES: &[&'static str] = &[
     "misgiving",
 ];
 // COPYRIGHT: Property of Vibe Vibe Corp™
-fn complex_algorithm(content: String) -> String {
+fn complex_model(content: String) -> String {
     let content = content.trim();
     if content.is_empty() {
-        return "None Available.".to_string();
+        return "No Vibes Available.".to_string();
     }
     let index = (fast_stable_hash(&content) % (VIBES.len() as u128)) as usize;
     VIBES[index].to_string()
