@@ -1,4 +1,3 @@
-use dioxus::document::Document;
 use dioxus::prelude::*;
 use dioxus_desktop::tao::window::Theme;
 use dioxus_desktop::{Config, WindowBuilder};
@@ -23,15 +22,14 @@ fn main() {
 }
 
 fn app() -> Element {
+    const STYLES: &'static str = include_str!("../assets/styles.css");
     let mut file_name = use_signal(String::new);
     let mut content = use_signal(String::new);
     let mut vibes = use_signal(|| Option::<String>::None);
     let vibes_display = vibes().map(|_| "inline").unwrap_or("none");
     let vibes_string = vibes().unwrap_or_else(String::new);
     rsx! {
-        Stylesheet{
-            href: asset!("/assets/styles.css")
-        }
+        style { "{STYLES}" }
         Button {
             variant: ButtonVariant::Outline,
             onclick: move |_| {
